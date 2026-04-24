@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Community Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-gold: #fbbf24;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        /* --- Header --- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-text h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .header-text p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        /* --- Review Cards --- */
+        .review-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: 0.3s ease;
+        }
+
+        .review-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .avatar-circle {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-rose));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            font-size: 18px;
+        }
+
+        .user-name { font-weight: 700; font-size: 16px; margin: 0; }
+        .review-date { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+        .rating-stars {
+            color: var(--accent-gold);
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 3px;
+        }
+
+        .review-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            font-style: italic;
+        }
+
+        /* --- Footer Button --- */
+        .btn-add-review {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-add-review:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .sl-no {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--glass-border);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Service Reviews</h1>
+            <p>Verified feedback from your fellow residents</p>
+        </div>
+        <a href="javascript:history.back()" style="color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 600;">
+            <i class="fas fa-chevron-left"></i> Back
+        </a>
+    </header>
+
+    {% for i in data %}
+    <div class="review-card">
+        <div class="sl-no">0{{ forloop.counter }}</div>
+        
+        <div class="user-meta">
+            <div class="avatar-circle">
+                {{ i.USER.name|slice:":1"|upper }}
+            </div>
+            <div>
+                <p class="user-name">{{ i.USER.name }}</p>
+                <span class="review-date">{{ i.date }}</span>
+            </div>
+        </div>
+
+        <div class="rating-stars">
+            {% for _ in "12345" %}
+                {% if forloop.counter <= i.rating %}
+                    <i class="fas fa-star"></i>
+                {% else %}
+                    <i class="far fa-star" style="opacity: 0.3;"></i>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <p class="review-text">
+            "{{ i.review }}"
+        </p>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 100px 20px; color: var(--text-dim);">
+        <i class="far fa-comment-dots fa-4x" style="opacity: 0.1; margin-bottom: 20px;"></i>
+        <p>No reviews have been shared for this service yet.</p>
+    </div>
+    {% endfor %}
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="/myapp/send_service_rating/{{service_id}}" class="btn-add-review">
+            <i class="fas fa-pen-fancy"></i> Share Your Experience
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

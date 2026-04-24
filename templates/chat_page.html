@@ -1,0 +1,235 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    :root {
+        --bg-main: #0f172a; 
+        --accent-blue: #3b82f6;
+        --accent-rose: #f43f5e;
+        --glass: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    body { 
+        font-family: 'Plus Jakarta Sans', sans-serif; 
+        background: var(--bg-main);
+        background-image: 
+            radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+            radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chat-container {
+        height: 90vh;
+        width: 95%;
+        max-width: 1000px;
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    .chat-arena {
+        flex-grow: 1;
+        padding: 2rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        scroll-behavior: smooth;
+        background: transparent;
+    }
+
+    /* Message Bubbles */
+    .msg-bubble {
+        max-width: 75%;
+        padding: 14px 22px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        position: relative;
+        animation: fadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeSlide {
+        from { opacity: 0; transform: translateY(20px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .msg-sent {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--accent-blue) 0%, #1d4ed8 100%);
+        color: white;
+        border-radius: 22px 22px 4px 22px;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+    }
+
+    .msg-received {
+        align-self: flex-start;
+        background: var(--glass);
+        color: #f8fafc;
+        border: 1px solid var(--glass-border);
+        border-radius: 22px 22px 22px 4px;
+    }
+
+    .msg-time {
+        font-size: 0.65rem;
+        opacity: 0.5;
+        margin-top: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Input Field */
+    .input-area {
+        padding: 1.5rem 2.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .input-wrapper {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 6px 10px 6px 20px;
+        transition: 0.3s;
+    }
+
+    .input-wrapper:focus-within {
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Scrollbar */
+    .chat-arena::-webkit-scrollbar { width: 6px; }
+    .chat-arena::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+</style>
+
+<div class="chat-container">
+    <div class="px-8 py-5 border-b border-[rgba(255,255,255,0.08)] flex justify-between items-center bg-transparent">
+        <div class="flex items-center gap-5">
+            <a href="javascript:history.back()" class="text-slate-500 hover:text-white transition-colors">
+                <i class="bi bi-chevron-left text-xl"></i>
+            </a>
+            <div class="relative">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-xl shadow-xl transform rotate-3">
+                    {{ receiver_name|slice:":1"|upper }}
+                </div>
+                <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-4 border-[#0f172a] rounded-full"></span>
+            </div>
+            <div>
+                <h4 class="font-extrabold text-white text-xl tracking-tight">{{ receiver_name }}</h4>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">Active Now</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-4">
+            <button class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[rgba(255,255,255,0.05)] rounded-xl transition-all">
+                <i class="bi bi-telephone-fill"></i>
+            </button>
+            <button class="w-10 h-10 flex items-center justify-center text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all">
+                <i class="bi bi-shield-lock-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="chat-window" class="chat-arena">
+        <div class="hidden" id="typing">
+            <div class="flex gap-1 p-3 bg-slate-800/50 rounded-full w-fit">
+                <div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></div>
+                <div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div class="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="flex gap-4 items-center">
+            <button class="text-slate-500 hover:text-blue-400 transition-colors">
+                <i class="bi bi-plus-circle-fill text-2xl"></i>
+            </button>
+            <div class="flex-grow input-wrapper flex items-center gap-3">
+                <input type="text" id="msg" class="flex-grow bg-transparent border-none outline-none text-white placeholder-slate-500 text-sm py-3" placeholder="Message {{ receiver_name }}..." onkeypress="handleKey(event)">
+                <button class="text-slate-500 hover:text-yellow-400 transition-colors">
+                    <i class="bi bi-emoji-smile-fill text-xl"></i>
+                </button>
+            </div>
+            <button onclick="send()" class="bg-gradient-to-br from-blue-500 to-blue-700 text-white w-14 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20 hover:scale-105 active:scale-95 transition-all">
+                <i class="bi bi-send-fill text-lg"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sid = "{{ request.user.id }}";
+    const rid = "{{ receiver_id }}";
+    let lastMsgCount = 0;
+
+    function handleKey(e) { if (e.key === "Enter") send(); }
+
+    function formatTime(date) {
+        const d = new Date(date);
+        return isNaN(d.getTime()) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function loadMsg() {
+        let form = new FormData();
+        form.append('sender_id', sid);
+        form.append('receiver_id', rid);
+
+        fetch('/myapp/chat_api/', { method: 'POST', body: form })
+            .then(res => res.json())
+            .then(res => {
+                if (res.data.length !== lastMsgCount) {
+                    let h = '';
+                    res.data.forEach(m => {
+                        let typeClass = m.sid == sid ? 'msg-sent' : 'msg-received';
+                        let time = m.time ? formatTime(m.time) : '';
+                        h += `
+                            <div class="msg-bubble ${typeClass}">
+                                <div class="font-medium">${m.msg}</div>
+                                ${time ? `<div class="msg-time ${m.sid == sid ? 'text-blue-100' : 'text-slate-500'}">${time}</div>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    const chatWin = document.getElementById('chat-window');
+                    chatWin.innerHTML = h + document.getElementById('typing').outerHTML;
+                    lastMsgCount = res.data.length;
+                    chatWin.scrollTop = chatWin.scrollHeight;
+                }
+            });
+    }
+
+    function send() {
+        let input = document.getElementById('msg');
+        let m = input.value.trim();
+        if (!m) return;
+
+        let form = new FormData();
+        form.append('sender_id', sid);
+        form.append('receiver_id', rid);
+        form.append('message', m);
+
+        fetch('/myapp/chat_api/', { method: 'POST', body: form })
+            .then(() => {
+                input.value = '';
+                loadMsg();
+            });
+    }
+
+    setInterval(loadMsg, 2000);
+    loadMsg();
+</script>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Register Support Request</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .complaint-card {
+            width: 100%;
+            max-width: 500px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header i { 
+            font-size: 40px; 
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-rose));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .header h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+        .header p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+
+        /* --- Form Styling --- */
+        .form-group { margin-bottom: 20px; }
+        label { 
+            display: block; margin-bottom: 10px; font-weight: 700;
+            color: var(--text-dim); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 1px; margin-left: 5px;
+        }
+
+        .input-style {
+            width: 100%; padding: 14px 18px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px; color: white;
+            font-family: inherit; font-size: 14px;
+            transition: all 0.3s ease; box-sizing: border-box;
+        }
+
+        .input-style:focus {
+            outline: none; border-color: var(--accent-blue);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        select.input-style { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 15px center; background-size: 18px; }
+
+        textarea.input-style { resize: none; }
+
+        /* --- Animation for "Other" field --- */
+        #otherContainer {
+            animation: slideDown 0.4s ease forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-submit {
+            width: 100%; padding: 16px; border: none; border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; font-weight: 800; font-size: 15px;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3); }
+
+        .back-link {
+            display: block; text-align: center; margin-top: 25px;
+            text-decoration: none; color: var(--text-dim);
+            font-size: 13px; font-weight: 600; transition: 0.2s;
+        }
+        .back-link:hover { color: var(--accent-rose); }
+
+    </style>
+</head>
+<body>
+
+<div class="complaint-card">
+    <div class="header">
+        <i class="fas fa-headset"></i>
+        <h2>Support Request</h2>
+        <p>Encountered an issue? Describe it below and our concierge team will prioritize your request.</p>
+    </div>
+
+    <form method="POST" id="complaintForm">
+        {% csrf_token %}
+        <input type="hidden" name="type" id="finalType">
+
+        <div class="form-group">
+            <label>Issue Category</label>
+            <select class="input-style" id="typeSelector" required onchange="handleTypeChange()">
+                <option value="" selected disabled>Select category...</option>
+                <option value="Service">Service (Staff & Concierge)</option>
+                <option value="Facility">Facility (Maintenance & Repair)</option>
+                <option value="Food">Dining (Gourmet Kitchen)</option>
+                <option value="Flat">Residence (Unit Issues)</option>
+                <option value="Other">Other (Specify below)</option>
+            </select>
+        </div>
+
+        <div class="form-group" id="otherContainer" style="display: none;">
+            <label>Specify Category</label>
+            <input type="text" class="input-style" id="customInput" placeholder="e.g. Security, Wellness Center...">
+        </div>
+
+        <div class="form-group">
+            <label>Description of Incident</label>
+            <textarea class="input-style" name="complaint" rows="5" required placeholder="Please provide specific details..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Submit Record
+        </button>
+    </form>
+
+    <a href="/myapp/user_view_reply/" class="back-link">
+        <i class="fas fa-history" style="margin-right: 5px;"></i> View Complaint History
+    </a>
+</div>
+
+<script>
+    const typeSelector = document.getElementById('typeSelector');
+    const customInput = document.getElementById('customInput');
+    const finalType = document.getElementById('finalType');
+    const otherContainer = document.getElementById('otherContainer');
+    const form = document.getElementById('complaintForm');
+
+    function handleTypeChange() {
+        if (typeSelector.value === 'Other') {
+            otherContainer.style.display = 'block';
+            customInput.required = true;
+            customInput.focus();
+        } else {
+            otherContainer.style.display = 'none';
+            customInput.required = false;
+            customInput.value = '';
+        }
+    }
+
+    form.onsubmit = function() {
+        if (typeSelector.value === 'Other') {
+            finalType.value = customInput.value.trim();
+        } else {
+            finalType.value = typeSelector.value;
+        }
+        
+        if (!finalType.value) {
+            alert("Please select or specify a category.");
+            return false;
+        }
+    };
+</script>
+
+</body>
+</html>

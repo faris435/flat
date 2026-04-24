@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Rate Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-gold: #fbbf24;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        .rating-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 45px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: var(--text-dim);
+            font-size: 14px;
+            margin-bottom: 35px;
+        }
+
+        /* Star Rating Logic */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .star-rating input { display: none; }
+
+        .star-rating label {
+            font-size: 45px;
+            color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: var(--accent-gold);
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .star-rating label:hover {
+            transform: scale(1.2) rotate(-10deg);
+        }
+
+        /* Form Styling */
+        .review-form {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .review-form label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 5px;
+        }
+
+        .review-form textarea {
+            width: 100%;
+            padding: 18px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            min-height: 140px;
+            transition: all 0.3s ease;
+        }
+
+        .review-form textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-link:hover { color: var(--accent-rose); }
+
+        /* Django Messages Styling */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+
+        .messages li {
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="rating-card">
+        <h2>Rate Experience</h2>
+        <p class="subtitle">Your feedback ensures the highest standards of service at Anna Vista.</p>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required />
+                <label for="star5" title="Excellent"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" id="star4" name="rating" value="4" />
+                <label for="star4" title="Very Good"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" id="star3" name="rating" value="3" />
+                <label for="star3" title="Good"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" id="star2" name="rating" value="2" />
+                <label for="star2" title="Fair"><i class="fas fa-star"></i></label>
+                
+                <input type="radio" id="star1" name="rating" value="1" />
+                <label for="star1" title="Poor"><i class="fas fa-star"></i></label>
+            </div>
+            
+            <div class="review-form">
+                <label for="review">Detailed Review</label>
+                <textarea 
+                    id="review" 
+                    name="review" 
+                    placeholder="Share your experience with this service provider..."
+                    required
+                ></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit Record</button>
+        </form>
+        
+        <a href="/myapp/user_view_booking/" class="back-link">
+            <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back to Bookings
+        </a>
+    </div>
+</body>
+</html>

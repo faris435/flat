@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Service History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-green: #10b981;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* --- Header --- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-text h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .header-text p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        /* --- Service Cards --- */
+        .service-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 80px 1.5fr 1.5fr 1fr;
+            gap: 25px;
+            align-items: start;
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- Column Styling --- */
+        .col-id {
+            font-weight: 800;
+            color: var(--glass-border);
+            font-size: 24px;
+        }
+
+        .section-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-group h3 { font-size: 18px; margin: 0 0 5px 0; font-weight: 700; }
+        .info-group p { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+        
+        .provider-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* --- Status & Actions --- */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .status-pending { background: rgba(148, 163, 184, 0.1); color: var(--text-dim); }
+        .status-confirmed { background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); }
+        .status-paid { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); }
+
+        .action-btns { display: flex; flex-direction: column; gap: 8px; }
+
+        .btn-act {
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-pay { background: var(--accent-rose); color: white; }
+        .btn-chat { background: var(--glass); border: 1px solid var(--glass-border); color: white; }
+        .btn-review { background: var(--accent-blue); color: white; }
+
+        .btn-act:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        @media (max-width: 900px) {
+            .service-card { grid-template-columns: 1fr; gap: 15px; }
+            .col-id { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Service Requests</h1>
+            <p>Manage your professional maintenance and lifestyle bookings</p>
+        </div>
+        <a href="/myapp/user_home/" style="color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 600;">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </header>
+
+    {% for i in data %}
+    <div class="service-card">
+        <div class="col-id">#{{ forloop.counter }}</div>
+
+        <div class="info-group">
+            <span class="section-label">Service Details</span>
+            <h3>{{ i.SERVICE.name }}</h3>
+            <p>{{ i.SERVICE.description }}</p>
+            <p style="margin-top:10px; color: var(--text-main); font-weight: 700;">
+                <i class="fas fa-tag"></i> ${{ i.SERVICE.price }}
+            </p>
+            <p style="font-size: 11px; margin-top: 5px;"><i class="far fa-calendar"></i> Booked on: {{ i.date }}</p>
+        </div>
+
+        <div class="info-group">
+            <span class="section-label">Service Provider</span>
+            <div class="provider-box">
+                <h3 style="font-size: 15px; color: var(--accent-blue);">{{ i.SERVICE.PROVIDER.name }}</h3>
+                <p><i class="fas fa-phone-alt" style="width: 15px;"></i> {{ i.SERVICE.PROVIDER.phone }}</p>
+                <p><i class="fas fa-map-marker-alt" style="width: 15px;"></i> {{ i.SERVICE.PROVIDER.place }}</p>
+            </div>
+        </div>
+
+        <div>
+            <span class="section-label">Status</span>
+            <div class="status-badge 
+                {% if i.Status == 'pending' %}status-pending
+                {% elif i.Status == 'Confirmed' %}status-confirmed
+                {% elif i.Status == 'paid' %}status-paid{% endif %}">
+                {{ i.Status }}
+            </div>
+
+            <div class="action-btns">
+                {% if i.Status == 'pending' %}
+                    <p style="font-size: 11px; color: var(--text-dim); text-align: center;">Awaiting provider confirmation...</p>
+                {% elif i.Status == 'Confirmed' %}
+                    <a href="/myapp/service_payment/{{ i.id }}/" class="btn-act btn-pay"><i class="fas fa-credit-card"></i> Pay Now</a>
+                    <a href="/myapp/chat_with_user/{{ i.SERVICE.PROVIDER.LOGIN.id }}/{{i.SERVICE.PROVIDER.name}}/" class="btn-act btn-chat"><i class="fas fa-comment-dots"></i> Chat</a>
+                    <a href="/myapp/send_service_rating/{{ i.SERVICE.PROVIDER.id }}/" class="btn-act btn-review"><i class="fas fa-star"></i> Review</a>
+                {% elif i.Status == 'paid' %}
+                    <a href="/myapp/chat_with_user/{{ i.SERVICE.PROVIDER.LOGIN.id }}/{{i.SERVICE.PROVIDER.name}}/" class="btn-act btn-chat"><i class="fas fa-comment-dots"></i> Message</a>
+                    <a href="/myapp/send_service_rating/{{ i.SERVICE.id }}/" class="btn-act btn-review"><i class="fas fa-star"></i> Rate Service</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 100px 20px; color: var(--text-dim);">
+        <i class="fas fa-tools fa-4x" style="opacity: 0.1; margin-bottom: 20px;"></i>
+        <p>No service history found.</p>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

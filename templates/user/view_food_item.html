@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Catalog | Anna Vista</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Header Layout */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-dashboard {
+            text-decoration: none;
+            color: var(--text-main);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-dashboard:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .sl-no {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent-rose);
+            background: rgba(244, 63, 94, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* Product Image */
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .product-image-placeholder {
+            width: 100%;
+            height: 200px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-size: 3rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .item-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            color: #fff;
+        }
+
+        .price-tag {
+            font-size: 1.3rem;
+            color: var(--accent-blue);
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Stats Grid */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .spec-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 10px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .spec-label {
+            color: var(--text-dim);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .spec-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .details-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        /* Order Button */
+        .btn-order {
+            text-decoration: none;
+            background: var(--accent-blue);
+            color: white;
+            padding: 16px;
+            border-radius: 18px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-order:hover {
+            background: #2563eb;
+            transform: scale(1.02);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px;
+            background: var(--glass);
+            border: 2px dashed var(--glass-border);
+            border-radius: 28px;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-area">
+        <h2>Gourmet Selection</h2>
+        <a href="/myapp/user_home/" class="back-dashboard">
+            <i class="fas fa-arrow-left"></i> BACK TO DASHBOARD
+        </a>
+    </div>
+
+    <div class="product-grid">
+        {% for i in data %}
+        <div class="product-card">
+            <span class="sl-no">#{{ forloop.counter }}</span>
+            
+            {% if i.photo %}
+            <img src="{{ i.photo.url }}" alt="{{ i.item }}" class="product-image">
+            {% else %}
+            <div class="product-image-placeholder">
+                <i class="fas fa-utensils"></i>
+            </div>
+            {% endif %}
+            
+            <h3 class="item-name">{{ i.item }}</h3>
+            <span class="price-tag">₹{{ i.price }}</span>
+
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Available</span>
+                    <span class="spec-value">{{ i.quantity }} Units</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Prepared</span>
+                    <span class="spec-value">{{ i.mfg_date }}</span>
+                </div>
+            </div>
+
+            <div class="details-text">
+                {{ i.details|truncatechars:90 }}
+            </div>
+
+            <a href="/myapp/add_quantity/{{ i.id }}" class="btn-order">
+                ADD TO ORDER
+            </a>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-cookie-bite fa-3x" style="margin-bottom: 20px; opacity: 0.3;"></i>
+            <p>Our kitchen is preparing something new. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

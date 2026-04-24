@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Service Categories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-pink: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            background-attachment: fixed;
+            margin: 0; padding: 40px; 
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* --- Header & Navigation --- */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 40px; border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 25px;
+        }
+
+        .page-title h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 5px 0; }
+        .page-title p { color: var(--text-dim); font-size: 14px; margin: 0; }
+
+        .nav-actions { display: flex; gap: 12px; }
+
+        .btn-base {
+            padding: 10px 20px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-dash {
+            background: var(--glass);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+        }
+        .btn-dash:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3); }
+
+        /* --- Grid --- */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* --- Category Card --- */
+        .category-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 140px;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+        .sl-no {
+            font-size: 10px; font-weight: 800; color: var(--accent-blue);
+            text-transform: uppercase; letter-spacing: 1px;
+            background: rgba(59, 130, 246, 0.1); padding: 4px 10px; border-radius: 6px;
+        }
+
+        .cat-icon { color: var(--text-dim); opacity: 0.5; font-size: 18px; }
+
+        .category-name {
+            font-size: 18px; font-weight: 700; color: white; margin-bottom: 20px;
+        }
+
+        /* --- Delete Action --- */
+        .btn-delete {
+            width: 100%; padding: 10px; border-radius: 10px;
+            background: rgba(244, 63, 94, 0.08); color: var(--accent-pink);
+            text-decoration: none; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; border: 1px solid transparent;
+        }
+
+        .btn-delete:hover { 
+            background: var(--accent-pink); color: white; 
+            box-shadow: 0 5px 15px rgba(244, 63, 94, 0.3);
+        }
+
+        .no-data {
+            grid-column: 1 / -1; text-align: center; padding: 80px 0;
+            background: var(--glass); border-radius: 24px;
+            border: 1px dashed var(--glass-border);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <div class="page-title">
+            <h2>Service Categories</h2>
+            <p>Organize and structure your facility offerings</p>
+        </div>
+        <div class="nav-actions">
+            <a href="/myapp/admin_home/" class="btn-base btn-dash">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="/myapp/add_category/" class="btn-base btn-add">
+                <i class="fas fa-plus"></i> NEW CATEGORY
+            </a>
+        </div>
+    </div>
+
+    <div class="category-grid">
+        {% for i in categories %}
+        <div class="category-card">
+            <div>
+                <div class="card-header">
+                    <span class="sl-no">ID #{{ forloop.counter }}</span>
+                    <i class="fas fa-layer-group cat-icon"></i>
+                </div>
+                <div class="category-name">{{ i.category }}</div>
+            </div>
+            
+            <div class="card-footer">
+                <a href="/myapp/delete_category/{{ i.id }}" class="btn-delete" onclick="return confirm('Are you sure you want to remove this category?')">
+                    <i class="far fa-trash-alt"></i> Remove Category
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-data">
+            <i class="fas fa-folder-open" style="font-size: 40px; color: var(--glass-border); margin-bottom: 20px; display: block;"></i>
+            <h3 style="color: var(--text-dim);">No categories found</h3>
+            <p style="color: var(--text-dim); font-size: 14px;">Create your first category to get started.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

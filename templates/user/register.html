@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista — Premium Occupant Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            /* Softened "Dim" Dark Mode */
+            --bg-deep: #0f172a;      /* Slate 900 instead of Pitch Black */
+            --bg-card: rgba(30, 41, 59, 0.75); /* Slate 800 Glassy */
+            --bg-input: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-muted: #64748b;
+            --text-sub: #94a3b8;
+            
+            /* Vibrant Palette from Login */
+            --accent-1: #ff3e8d; /* Pink */
+            --accent-2: #4f8ef7; /* Blue */
+            --gradient-primary: linear-gradient(135deg, #ff3e8d 0%, #4f8ef7 100%);
+            --glow: rgba(255, 62, 141, 0.3);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ── Dynamic Background ── */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(79, 142, 247, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(255, 62, 141, 0.12) 0%, transparent 45%);
+        }
+
+        /* ── Main Container ── */
+        .main-wrapper {
+            display: flex;
+            width: 1100px;
+            max-width: 100%;
+            height: 85vh; /* Fixed height for scrolling */
+            background: var(--bg-card);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── Left Side: Visual ── */
+        .visual-panel {
+            flex: 0.9;
+            background: var(--gradient-primary);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 50px;
+            color: white;
+        }
+
+        .visual-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('/static/user.jpg') center/cover no-repeat;
+            opacity: 0.15;
+        }
+
+        .visual-content { position: relative; z-index: 2; margin-top: auto; margin-bottom: auto;}
+        
+        .brand-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .headline { font-size: 42px; font-weight: 800; line-height: 1.15; margin-bottom: 15px; }
+        .subline { font-size: 16px; opacity: 0.9; line-height: 1.6; font-weight: 400; }
+        .left-footer { position: relative; z-index: 2; font-size: 13px; opacity: 0.7; font-weight: 500; }
+
+        /* ── Right Side: Form ── */
+        .form-panel {
+            flex: 1.3;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(15, 23, 42, 0.4);
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar for the form */
+        .form-panel::-webkit-scrollbar { width: 6px; }
+        .form-panel::-webkit-scrollbar-track { background: transparent; }
+        .form-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .form-panel::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .form-header h2 { font-size: 26px; margin-bottom: 6px; font-weight: 700; }
+        .form-header p { color: var(--text-sub); margin-bottom: 25px; font-size: 14px; }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: var(--accent-2);
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Room Selection Grid ── */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .room-option { position: relative; cursor: pointer; }
+        .room-option input[type="radio"] { position: absolute; opacity: 0; }
+
+        .room-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .room-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .room-info h4 { font-size: 14px; color: var(--text-primary); margin-bottom: 2px; }
+        .room-info p { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+        .room-option input[type="radio"]:checked + .room-card {
+            border-color: var(--accent-2);
+            background: rgba(79, 142, 247, 0.1);
+            box-shadow: 0 0 20px rgba(79, 142, 247, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .hidden-room { display: none; }
+
+        .no-room {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ── Inputs ── */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .input-group { position: relative; display: flex; flex-direction: column; }
+        
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-2);
+            background: rgba(255, 255, 255, 0.03);
+            box-shadow: 0 0 15px rgba(79, 142, 247, 0.15);
+        }
+
+        input[type="file"].input-field {
+            padding: 9px 12px;
+            color: var(--text-sub);
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 10px;
+            font-family: inherit;
+        }
+
+        .error { color: #f87171; font-size: 11px; margin-top: 5px; font-weight: 500; }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 10px 15px -3px var(--glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -5px var(--glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 850px) {
+            .main-wrapper { flex-direction: column; height: auto; max-height: 90vh; }
+            .visual-panel { padding: 30px; flex: none; }
+            .headline { font-size: 28px; }
+            .form-panel { padding: 30px; }
+            .form-row, .room-grid { grid-template-columns: 1fr; }
+            .left-footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh"></div>
+
+    <main class="main-wrapper">
+        <div class="visual-panel">
+            <div class="visual-content">
+                <div class="brand-pill">✨ Anna Vista Residencies</div>
+                <h1 class="headline">Secure Your<br>Perfect Space.</h1>
+                <p class="subline">Join our community. Complete your occupant registration to access exclusive amenities and portal services.</p>
+            </div>
+            <div class="left-footer">
+                &copy; 2026 Anna Vista
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Register as a new flat occupant</p>
+            </div>
+
+            <form action="/myapp/user_register_post/" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                {% csrf_token %}
+
+                <div class="section-title">01. Select Accommodation</div>
+
+                {% if room %}
+                <div class="room-grid">
+                    {% for i in room %}
+                    <label class="room-option {% if forloop.counter > 4 %}hidden-room{% endif %}">
+                        <input type="radio" name="room" value="{{ i.id }}">
+                        <div class="room-card">
+                            <img src="{{ i.image.url }}" alt="Room {{ i.roomnumber }}">
+                            <div class="room-info">
+                                <h4>Apt {{ i.roomnumber }}</h4>
+                                <p>Floor {{ i.floor }}</p>
+                            </div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                {% if room|length > 4 %}
+                <button type="button" class="btn-secondary" onclick="toggleRooms()" id="toggleBtn">
+                    View All Available Rooms
+                </button>
+                {% endif %}
+
+                {% else %}
+                <div class="no-room">
+                    ❌ Currently at capacity. No rooms available.
+                </div>
+                {% endif %}
+
+                <div class="section-title">02. Personal Profile</div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" id="name" class="input-field" placeholder="John Doe">
+                        <div class="error" id="nameError"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="name@example.com">
+                        <div class="error" id="emailError"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" id="phone" class="input-field" placeholder="10-digit mobile">
+                        <div class="error" id="phoneError"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Profile Photo</label>
+                        <input type="file" name="photo" id="photo" class="input-field">
+                    </div>
+                </div>
+
+                <div class="section-title">03. Portal Access</div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" name="username" id="username" class="input-field" placeholder="Choose username">
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" name="password" id="password" class="input-field" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary" {% if not room %}disabled{% endif %}>
+                    Complete Registration
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+    function toggleRooms() {
+        let hidden = document.querySelectorAll('.hidden-room');
+        let btn = document.getElementById('toggleBtn');
+        
+        hidden.forEach(el => {
+            el.style.display = (el.style.display === 'flex' || el.style.display === 'block') ? 'none' : 'block';
+        });
+
+        if (btn) {
+            btn.innerText = btn.innerText.includes('All') ? 'Show Less' : 'View All Available Rooms';
+        }
+    }
+
+    function validateForm() {
+        let valid = true;
+
+        // Name
+        let name = document.getElementById("name").value.trim();
+        if (name.length < 3) {
+            document.getElementById("nameError").innerText = "Enter a valid full name";
+            valid = false;
+        } else {
+            document.getElementById("nameError").innerText = "";
+        }
+
+        // Email
+        let email = document.getElementById("email").value.trim();
+        if (!email.includes("@") || !email.includes(".")) {
+            document.getElementById("emailError").innerText = "Enter a valid email address";
+            valid = false;
+        } else {
+            document.getElementById("emailError").innerText = "";
+        }
+
+        // Phone
+        let phone = document.getElementById("phone").value.trim();
+        if (phone.length !== 10 || isNaN(phone)) {
+            document.getElementById("phoneError").innerText = "Enter a valid 10-digit number";
+            valid = false;
+        } else {
+            document.getElementById("phoneError").innerText = "";
+        }
+
+        // Room
+        let roomSelected = document.querySelector('input[name="room"]:checked');
+        if (!roomSelected) {
+            alert("Please select your apartment/room space to continue.");
+            valid = false;
+        }
+
+        return valid;
+    }
+    </script>
+
+</body>
+</html>

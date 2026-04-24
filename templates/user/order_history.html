@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | My Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-gold: #fbbf24;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* --- Header --- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-text h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .header-text p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        /* --- Order Cards --- */
+        .order-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: grid;
+            grid-template-columns: 100px 2fr 1fr 1fr 150px;
+            align-items: center;
+            gap: 20px;
+            transition: 0.3s ease;
+        }
+
+        .order-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: scale(1.01);
+        }
+
+        .food-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 1px solid var(--glass-border);
+        }
+
+        .food-info h3 { font-size: 18px; margin: 0 0 5px 0; font-weight: 700; }
+        .food-info p { font-size: 13px; color: var(--text-dim); margin: 0; line-height: 1.4; }
+
+        .price-info { text-align: center; }
+        .price-val { display: block; font-size: 18px; font-weight: 800; color: var(--accent-blue); }
+        .qty-val { font-size: 12px; color: var(--text-dim); }
+
+        .date-info { font-size: 13px; color: var(--text-dim); text-align: center; }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .st-ordered { background: rgba(148, 163, 184, 0.1); color: var(--text-dim); border: 1px solid rgba(148, 163, 184, 0.2); }
+        .st-confirmed { background: rgba(251, 191, 36, 0.1); color: var(--accent-gold); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .st-paid { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* --- Actions --- */
+        .btn-pay {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; border: none; padding: 10px;
+            border-radius: 12px; font-weight: 700; cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-pay:hover { filter: brightness(1.2); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+
+        .completed-text { color: var(--text-dim); font-size: 13px; font-weight: 600; text-align: center; display: block; }
+
+        @media (max-width: 850px) {
+            .order-card { grid-template-columns: 80px 1fr 1fr; }
+            .date-info, .price-info { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Order History</h1>
+            <p>Review your culinary journey at Anna Vista</p>
+        </div>
+        <a href="/myapp/user_home/" style="color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 600;">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </header>
+
+    {% for order in data %}
+    <div class="order-card">
+        <div>
+            {% if order.FOOD.photo %}
+                <img src="{{ order.FOOD.photo.url }}" class="food-thumb" alt="{{ order.FOOD.item }}">
+            {% else %}
+                <div class="food-thumb" style="display:flex; align-items:center; justify-content:center; background: var(--bg-main);">
+                    <i class="fas fa-utensils text-dim"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="food-info">
+            <h3>{{ order.FOOD.item }}</h3>
+            <p>{{ order.FOOD.description|truncatechars:60 }}</p>
+        </div>
+
+        <div class="price-info">
+            <span class="price-val">${{ order.FOOD.price }}</span>
+            <span class="qty-val">Qty: {{ order.quantity }}</span>
+        </div>
+
+        <div class="date-info">
+            <i class="far fa-calendar-alt"></i><br>
+            {{ order.date }}
+        </div>
+
+        <div class="action-zone">
+            <div style="margin-bottom: 10px;">
+                {% if order.Status == 'ordered' %}
+                    <span class="status-badge st-ordered">Pending</span>
+                {% elif order.Status == 'Confirmed' %}
+                    <span class="status-badge st-confirmed">Ready to Pay</span>
+                {% elif order.Status == 'paid' %}
+                    <span class="status-badge st-paid">Settled</span>
+                {% else %}
+                    <span class="status-badge st-ordered">{{ order.Status }}</span>
+                {% endif %}
+            </div>
+
+            {% if order.Status == 'Confirmed' %}
+                <form method="post" action="/myapp/pay_order/{{ order.id }}/">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-pay"><i class="fas fa-wallet"></i> Pay Now</button>
+                </form>
+            {% elif order.Status == 'paid' %}
+                <span class="completed-text"><i class="fas fa-check-double"></i> Completed</span>
+            {% else %}
+                <span class="completed-text" style="opacity: 0.5;">Awaiting Admin</span>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div style="text-align: center; padding: 100px 20px; color: var(--text-dim);">
+        <i class="fas fa-receipt fa-4x" style="opacity: 0.1; margin-bottom: 20px;"></i>
+        <p>No culinary orders found in your history.</p>
+    </div>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Verify Occupants</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-green: #10b981;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            background-attachment: fixed;
+            margin: 0; padding: 40px; 
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation --- */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 40px; border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 25px;
+        }
+
+        .page-title h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
+        .page-title p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        .btn-dash {
+            padding: 10px 20px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+            background: var(--glass);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+        .btn-dash:hover { background: rgba(255,255,255,0.1); border-color: white; color: var(--accent-rose); }
+
+        /* --- Grid Layout --- */
+        .occupant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- Glass Card --- */
+        .occupant-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            display: flex; flex-direction: column;
+        }
+
+        .occupant-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- Photos Section --- */
+        .photo-header {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            height: 180px;
+            gap: 2px;
+            background: var(--glass-border);
+        }
+
+        .photo-header img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .label-overlay {
+            position: absolute; bottom: 8px; left: 8px;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 3px 8px; border-radius: 6px; font-size: 9px;
+            text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;
+        }
+
+        /* --- Content --- */
+        .card-body { padding: 20px; flex-grow: 1; }
+
+        .status-badge {
+            float: right; font-size: 10px; font-weight: 800;
+            padding: 4px 10px; border-radius: 8px; text-transform: uppercase;
+        }
+        .bg-pending { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+        .bg-approved { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .bg-rejected { background: rgba(244, 63, 94, 0.1); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.2); }
+
+        .name { font-size: 18px; font-weight: 800; margin: 0 0 15px 0; }
+        
+        .info-group { margin-bottom: 15px; }
+        .info-row { font-size: 13px; color: var(--text-dim); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .info-row i { color: var(--accent-blue); width: 14px; text-align: center; font-size: 12px; }
+
+        .room-mini-info {
+            background: rgba(255,255,255,0.02);
+            padding: 12px; border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            margin-top: 10px;
+        }
+        .room-mini-info h6 { margin: 0 0 5px 0; font-size: 11px; text-transform: uppercase; color: var(--accent-blue); }
+        .room-mini-info p { margin: 0; font-size: 12px; line-height: 1.4; opacity: 0.9; }
+
+        /* --- Actions --- */
+        .card-actions {
+            display: grid; grid-template-columns: 1fr 1fr;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn {
+            padding: 14px; font-size: 12px; font-weight: 700;
+            text-align: center; text-decoration: none; transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-approve { color: var(--accent-green); }
+        .btn-approve:hover { background: var(--accent-green); color: white; }
+
+        .btn-reject { color: var(--accent-rose); border-left: 1px solid var(--glass-border); }
+        .btn-reject:hover { background: var(--accent-rose); color: white; }
+
+        .btn-locked { grid-column: 1 / -1; color: var(--text-dim); opacity: 0.5; background: rgba(255,255,255,0.05); cursor: not-allowed; }
+
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 100px 0;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <div class="page-title">
+            <h2>Occupant Verification</h2>
+            <p>Review and authorize residential access requests</p>
+        </div>
+        <a href="/myapp/admin_home/" class="btn-dash">
+            <i class="fas fa-th-large"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="occupant-grid">
+        {% for i in data %}
+        <div class="occupant-card">
+            <div class="photo-header">
+                <div style="position:relative">
+                    <img src="{{ i.photo.url }}" alt="Occupant">
+                    <span class="label-overlay">Occupant</span>
+                </div>
+                <div style="position:relative">
+                    <img src="{{ i.ROOM.image.url }}" alt="Room">
+                    <span class="label-overlay">Unit {{ i.ROOM.roomnumber }}</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <span class="status-badge 
+                    {% if i.status == 'pending' %}bg-pending
+                    {% elif i.status == 'Approved' %}bg-approved
+                    {% else %}bg-rejected{% endif %}">
+                    {{ i.status }}
+                </span>
+                
+                <h3 class="name">{{ i.name }}</h3>
+
+                <div class="info-group">
+                    <div class="info-row"><i class="fas fa-envelope"></i> {{ i.email }}</div>
+                    <div class="info-row"><i class="fas fa-phone"></i> {{ i.phone }}</div>
+                </div>
+
+                <div class="room-mini-info">
+                    <h6>Allocated Unit Details</h6>
+                    <p><strong>Room {{ i.ROOM.roomnumber }}</strong> (Floor {{ i.ROOM.floor }})</p>
+                    <p style="font-size: 11px; color: var(--text-dim);">{{ i.ROOM.details|truncatechars:50 }}</p>
+                </div>
+            </div>
+
+            <div class="card-actions">
+                {% if i.status == "pending" %}
+                    <a href="/myapp/approve_occupant/{{ i.id }}" class="action-btn btn-approve">
+                        <i class="fas fa-check-circle"></i> Approve
+                    </a>
+                    <a href="/myapp/reject_occupant/{{ i.id }}" class="action-btn btn-reject">
+                        <i class="fas fa-times-circle"></i> Reject
+                    </a>
+                {% else %}
+                    <div class="action-btn btn-locked">
+                        <i class="fas fa-lock"></i> Verification Finalized
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-users-slash fa-3x mb-3"></i>
+            <h3>No pending occupants</h3>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

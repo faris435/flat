@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Add New Room</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #0f172a; 
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-rose: #fb7185; /* Soft Rose Pink */
+            --accent-blue: #3b82f6;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-body);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(251, 113, 133, 0.05) 0%, transparent 40%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            color: var(--text-main);
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header i {
+            font-size: 40px;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
+        p { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+
+        label { 
+            display: block; 
+            margin: 0 0 8px 4px; 
+            font-weight: 700; 
+            color: var(--text-dim); 
+            font-size: 12px; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="text"], 
+        input[type="number"], 
+        input[type="file"] {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        /* Styling the file input specifically */
+        input[type="file"] {
+            padding: 10px;
+            font-size: 13px;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(59, 130, 246, 0.3);
+            filter: brightness(1.1);
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px;
+            text-decoration: none;
+            color: var(--text-dim);
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-link:hover { color: var(--accent-rose); }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <div class="form-header">
+        <i class="fas fa-door-open"></i>
+        <h2>Add New Room</h2>
+        <p>Register a new unit to Anna Vista</p>
+    </div>
+    
+    <form method="post" action="/myapp/add_room_post/" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>Floor Level</label>
+        <input type="number" name="floor" placeholder="e.g. 1" required>
+
+        <label>Unit/Room Number</label>
+        <input type="text" name="room_no" placeholder="e.g. 101" required>
+
+        <label>Unit Description</label>
+        <input type="text" name="details" placeholder="Briefly describe the amenities..." required>
+
+        <label>Room Preview Photo</label>
+        <input type="file" name="image" accept="image/*" required>
+
+        <button type="submit">Complete Registration</button>
+    </form>
+    
+    <a href="/myapp/view_room/" class="back-link">
+        <i class="fas fa-arrow-left"></i> Return to Inventory
+    </a>
+</div>
+
+</body>
+</html>

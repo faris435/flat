@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Edit Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 5% 5%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 95% 95%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 40px 20px;
+        }
+
+        .edit-card {
+            width: 100%;
+            max-width: 550px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 35px; }
+        .header i { font-size: 32px; color: var(--accent-blue); margin-bottom: 15px; }
+        .header h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+        .header p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        /* --- Photo Preview Section --- */
+        .photo-preview-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 1px dashed var(--glass-border);
+        }
+
+        .current-img {
+            width: 80px; height: 80px;
+            border-radius: 20px; object-fit: cover;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .no-img-box {
+            width: 80px; height: 80px; border-radius: 20px;
+            background: var(--bg-main); display: flex;
+            align-items: center; justify-content: center; color: var(--text-dim);
+        }
+
+        /* --- Form Styling --- */
+        .form-group { margin-bottom: 20px; }
+        label { 
+            display: block; margin-bottom: 8px; font-weight: 700;
+            color: var(--text-dim); font-size: 11px; text-transform: uppercase;
+            letter-spacing: 1px; margin-left: 5px;
+        }
+
+        .input-style {
+            width: 100%; padding: 14px 18px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px; color: white;
+            font-family: inherit; font-size: 15px;
+            transition: all 0.3s ease; box-sizing: border-box;
+        }
+
+        .input-style:focus {
+            outline: none; border-color: var(--accent-blue);
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        /* File input specific */
+        input[type="file"]::file-selector-button {
+            background: var(--accent-blue); color: white; border: none;
+            padding: 6px 14px; border-radius: 8px; margin-right: 15px;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover { filter: brightness(1.2); }
+
+        /* --- Actions --- */
+        .btn-update {
+            width: 100%; padding: 16px; border: none; border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; font-weight: 700; font-size: 16px;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-update:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.3); }
+
+        .nav-footer {
+            margin-top: 25px; padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex; justify-content: center; gap: 20px;
+        }
+
+        .footer-link {
+            text-decoration: none; color: var(--text-dim);
+            font-size: 13px; font-weight: 600; transition: 0.2s;
+        }
+        .footer-link:hover { color: white; }
+    </style>
+</head>
+<body>
+
+<div class="edit-card">
+    <div class="header">
+        <i class="fas fa-user-circle"></i>
+        <h2>Account Settings</h2>
+        <p>Update your personal identity and credentials</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" class="input-style" name="name" value="{{ data.name }}" placeholder="Enter full name">
+        </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="input-style" name="email" value="{{ data.email }}" placeholder="Enter email">
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" class="input-style" name="phone" value="{{ data.phone }}" placeholder="Enter phone">
+        </div>
+
+        <label>Identity Photo</label>
+        <div class="photo-preview-section">
+            {% if data.photo %}
+                <img src="{{ data.photo.url }}" alt="Profile" class="current-img">
+                <div>
+                    <span style="display:block; font-size: 12px; font-weight: 700;">Current Photo</span>
+                    <span style="font-size: 11px; color: var(--text-dim);">Kept unless new file is selected</span>
+                </div>
+            {% else %}
+                <div class="no-img-box"><i class="fas fa-camera"></i></div>
+                <span style="font-size: 11px; color: var(--text-dim);">No photo uploaded yet</span>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>Upload New Photo</label>
+            <input type="file" class="input-style" name="photo" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn-update">
+            <i class="fas fa-sync-alt" style="margin-right: 8px;"></i> Save Changes
+        </button>
+    </form>
+
+    <div class="nav-footer">
+        <a href="/myapp/user_view_profile/" class="footer-link">
+            <i class="fas fa-arrow-left"></i> Cancel
+        </a>
+        <a href="/myapp/user_home/" class="footer-link">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

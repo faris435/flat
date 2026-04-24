@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | User Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.95);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 20px;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .user-profile {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .user-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 30px;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            padding: 4px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .user-info h3 { font-size: 18px; font-weight: 800; color: white; }
+        .user-info p { font-size: 12px; color: var(--accent-rose); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        .nav-links { list-style: none; margin-top: 20px; }
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-dim);
+            padding: 14px 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav-item:hover {
+            background: var(--glass);
+            color: var(--accent-blue);
+        }
+
+        .logout { color: var(--accent-rose) !important; margin-top: auto; }
+        .logout:hover { background: rgba(244, 63, 94, 0.1); }
+
+        /* --- Main Content --- */
+        .main-container {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 60px;
+        }
+
+        /* --- Welcome Hero --- */
+        .welcome-hero {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(244, 63, 94, 0.1));
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 50px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 10px; }
+        .welcome-hero p { color: var(--text-dim); font-size: 16px; max-width: 500px; }
+        
+        .room-badge {
+            display: inline-block;
+            background: var(--accent-blue);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-top: 20px;
+        }
+
+        /* --- Action Grid --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 30px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .icon-box {
+            width: 55px; height: 55px;
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+
+        /* Individual Card Colors */
+        .c1 { background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); }
+        .c2 { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .c3 { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); }
+        .c4 { background: rgba(244, 63, 94, 0.1); color: var(--accent-rose); }
+        .c5 { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+
+        .card h3 { color: white; font-size: 18px; font-weight: 700; }
+        .card p { color: var(--text-dim); font-size: 13px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+{% include 'msgalert.html'%}
+{% block content%}
+{% endblock %}
+    <aside class="sidebar">
+        <div class="user-profile">
+            {% if data.photo %}
+                <img src="{{ data.photo.url }}" class="user-photo" alt="{{ data.name }}">
+            {% else %}
+                <div class="user-photo" style="background: var(--glass); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-user fa-3x" style="color: var(--glass-border);"></i>
+                </div>
+            {% endif %}
+            <div class="user-info">
+                <h3>{{ data.name }}</h3>
+                <p>Resident Premium</p>
+            </div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="/myapp/user_home/" class="nav-item" style="color: var(--accent-blue); background: var(--glass);">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="/myapp/user_view_profile/" class="nav-item"><i class="fas fa-user-circle"></i> Profile Settings</a>
+            <a href="/myapp/view_facility/" class="nav-item"><i class="fas fa-building"></i> Amenities</a>
+            <a href="/myapp/user_view_reply/" class="nav-item"><i class="fas fa-headset"></i> Help Center</a>
+            
+            <a href="/myapp/login/" class="nav-item logout">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-container">
+        <section class="welcome-hero">
+            <p style="color: var(--accent-rose); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">Welcome back to Anna Vista</p>
+            <h1>Hello, {{ data.name }}!</h1>
+            <p>Your premium residency dashboard is ready. Manage your services, explore gourmet options, or check your amenity status below.</p>
+            <div class="room-badge">
+                <i class="fas fa-door-open" style="margin-right: 8px;"></i> Room No: {{ data.ROOM.roomnumber }}
+            </div>
+        </section>
+
+        <div class="grid">
+            <a href="/myapp/user_view_services/" class="card">
+                <div class="icon-box c1"><i class="fas fa-concierge-bell"></i></div>
+                <h3>Book Services</h3>
+                <p>Request elite housekeeping, maintenance, or specialized concierge help.</p>
+            </a>
+
+            <a href="/myapp/user_view_fooditem/" class="card">
+                <div class="icon-box c4"><i class="fas fa-utensils"></i></div>
+                <h3>Gourmet Dining</h3>
+                <p>Browse our curated menu and enjoy doorstep delivery from our premium kitchen.</p>
+            </a>
+
+            <a href="/myapp/user_view_booking/" class="card">
+                <div class="icon-box c2"><i class="fas fa-calendar-check"></i></div>
+                <h3>My Bookings</h3>
+                <p>Track the real-time status of your service requests and appointments.</p>
+            </a>
+
+            <a href="/myapp/order_history/" class="card">
+                <div class="icon-box c3"><i class="fas fa-history"></i></div>
+                <h3>Order Ledger</h3>
+                <p>Review your previous orders and check the status of your current meal delivery.</p>
+            </a>
+
+            <a href="/myapp/view_facility/" class="card">
+                <div class="icon-box c5"><i class="fas fa-spa"></i></div>
+                <h3>Amenities</h3>
+                <p>Check exclusive lounge hours, pool access, and gym availability.</p>
+            </a>
+
+            <a href="/myapp/user_view_reply/" class="card">
+                <div class="icon-box c1" style="background: rgba(255,255,255,0.05); color: white;"><i class="fas fa-comment-dots"></i></div>
+                <h3>Support Desk</h3>
+                <p>Have a complaint or need technical help? Message our desk directly.</p>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>

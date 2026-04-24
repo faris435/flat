@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Facilities Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-green: #10b981;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            background-attachment: fixed;
+            margin: 0; padding: 40px; 
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* --- Navigation --- */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 40px; border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 25px;
+        }
+
+        .page-title h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
+        .page-title p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        .nav-buttons { display: flex; gap: 12px; }
+
+        .btn-base {
+            padding: 10px 20px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-dash {
+            background: var(--glass);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+        }
+        .btn-dash:hover { background: rgba(255,255,255,0.1); border-color: white; color: var(--accent-rose); }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3); }
+
+        /* --- Facility Grid --- */
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .facility-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transition: all 0.4s ease;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* --- Image Wrapper --- */
+        .img-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: #1e293b;
+        }
+
+        .facility-img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: 0.5s; opacity: 0.85;
+        }
+
+        .facility-card:hover .facility-img { transform: scale(1.1); opacity: 1; }
+
+        .status-pill {
+            position: absolute; top: 15px; right: 15px;
+            padding: 5px 12px; border-radius: 8px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+            backdrop-filter: blur(5px);
+        }
+        .pill-active { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .pill-inactive { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        /* --- Content --- */
+        .card-body { padding: 22px; flex-grow: 1; }
+        .card-body h3 { font-size: 20px; font-weight: 800; margin: 0 0 10px 0; color: white; }
+        .card-body p { font-size: 13px; color: var(--text-dim); line-height: 1.6; margin: 0; }
+
+        /* --- Actions --- */
+        .card-footer {
+            padding: 15px 22px;
+            background: rgba(0, 0, 0, 0.2);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px; border-radius: 10px;
+            text-align: center; text-decoration: none;
+            font-size: 12px; font-weight: 700; transition: 0.2s;
+        }
+
+        .btn-edit { background: var(--glass); color: white; border: 1px solid var(--glass-border); }
+        .btn-edit:hover { background: white; color: var(--bg-main); }
+
+        .btn-delete { background: rgba(244, 63, 94, 0.05); color: var(--accent-rose); }
+        .btn-delete:hover { background: var(--accent-rose); color: white; }
+
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 100px 0;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <div class="page-title">
+            <h2>Facilities Management</h2>
+            <p>Maintain and update property amenities</p>
+        </div>
+        <div class="nav-buttons">
+            <a href="/myapp/admin_home/" class="btn-base btn-dash">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="/myapp/add_facility/" class="btn-base btn-add">
+                <i class="fas fa-plus"></i> NEW FACILITY
+            </a>
+        </div>
+    </div>
+
+    <div class="facility-grid">
+        {% for i in data %}
+        <div class="facility-card">
+            <div class="img-wrapper">
+                {% if i.photo %}
+                    <img src="{{ i.photo.url }}" class="facility-img" alt="{{ i.name }}">
+                {% else %}
+                    <div style="height:100%; display:flex; align-items:center; justify-content:center; color: var(--glass-border);">
+                        <i class="fas fa-image fa-3x"></i>
+                    </div>
+                {% endif %}
+                
+                <span class="status-pill {% if i.Status == 'Active' %}pill-active{% else %}pill-inactive{% endif %}">
+                    {{ i.Status }}
+                </span>
+            </div>
+
+            <div class="card-body">
+                <h3>{{ i.name }}</h3>
+                <p>{{ i.description|truncatechars:100 }}</p>
+            </div>
+
+            <div class="card-footer">
+                <a href="/myapp/edit_facility/{{ i.id }}" class="action-btn btn-edit">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="/myapp/delete_facility/{{ i.id }}" class="action-btn btn-delete" onclick="return confirm('Remove this facility?')">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-building fa-4x mb-3"></i>
+            <h3>No facilities listed yet.</h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

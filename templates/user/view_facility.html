@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Amenities & Facilities</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --accent-green: #10b981;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            color: var(--text-main);
+            margin: 0; padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* --- Header Section --- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-text h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+        .header-text p { color: var(--text-dim); font-size: 14px; margin-top: 5px; }
+
+        .btn-back {
+            text-decoration: none;
+            color: var(--text-main);
+            background: var(--glass);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+        /* --- Facility Grid --- */
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .facility-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .facility-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* --- Image Styling --- */
+        .img-container {
+            height: 220px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .facility-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.6s;
+        }
+
+        .facility-card:hover .facility-img { transform: scale(1.1); }
+
+        /* --- Status Overlays --- */
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+            z-index: 2;
+        }
+
+        .status-active { 
+            background: rgba(16, 185, 129, 0.2); 
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-inactive { 
+            background: rgba(244, 63, 94, 0.2); 
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        /* --- Content Styling --- */
+        .content { padding: 25px; }
+        
+        .facility-number {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .content p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin: 0;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 100px 0;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="page-header">
+        <div class="header-text">
+            <h1>Property Amenities</h1>
+            <p>Explore the premium facilities available at Anna Vista</p>
+        </div>
+        <a href="/myapp/user_home/" class="btn-back">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+    </header>
+
+    <div class="facility-grid">
+        {% for i in data %}
+        <div class="facility-card">
+            <div class="img-container">
+                {% if i.photo %}
+                    <img src="{{ i.photo.url }}" class="facility-img" alt="{{ i.name }}">
+                {% else %}
+                    <div style="height:100%; display:flex; align-items:center; justify-content:center; background:#1e293b;">
+                        <i class="fas fa-image fa-3x" style="color: var(--glass-border);"></i>
+                    </div>
+                {% endif %}
+
+                <div class="status-badge {% if i.Status == 'Active' %}status-active{% else %}status-inactive{% endif %}">
+                    {% if i.Status == 'Active' %}
+                        <i class="fas fa-check-circle"></i> Open
+                    {% else %}
+                        <i class="fas fa-times-circle"></i> Closed
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="content">
+                <span class="facility-number">Facility #{{ forloop.counter }}</span>
+                <h3>{{ i.name }}</h3>
+                <p>{{ i.description }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-building fa-4x" style="margin-bottom: 20px; opacity: 0.2;"></i>
+            <p>No facilities are currently listed.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

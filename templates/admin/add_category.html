@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Add Category</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #0f172a; 
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #3b82f6;
+            --accent-pink: #f43f5e;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-body);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(244, 63, 94, 0.05) 0%, transparent 40%);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            color: var(--text-main);
+        }
+
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header i {
+            font-size: 32px;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            width: 64px;
+            height: 64px;
+            line-height: 64px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin: 0; }
+        p { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+
+        .form-group {
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        label { 
+            display: block; 
+            margin: 0 0 10px 4px; 
+            font-weight: 700; 
+            color: var(--text-dim); 
+            font-size: 11px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-submit:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(59, 130, 246, 0.3);
+            filter: brightness(1.1);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .link-item {
+            text-decoration: none;
+            color: var(--text-dim);
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .link-item:hover { color: white; }
+        .link-dash:hover { color: var(--accent-pink); }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <div class="form-header">
+        <i class="fas fa-tags"></i>
+        <h2>Add Category</h2>
+        <p>Create a new service classification</p>
+    </div>
+    
+    <form method="post" action="/myapp/category_post/">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Category Name</label>
+            <input type="text" name="category" placeholder="e.g. Maintenance, Housekeeping" required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-plus-circle"></i> Add Category
+        </button>
+    </form>
+    
+    <div class="footer-links">
+        <a href="/myapp/view_category/" class="link-item">
+            <i class="fas fa-list"></i> View All Categories
+        </a>
+        <a href="/myapp/admin_home/" class="link-item link-dash">
+            <i class="fas fa-th-large"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

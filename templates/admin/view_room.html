@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anna Vista | Manage Rooms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-pink: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 100% 100%, rgba(244, 63, 94, 0.05) 0%, transparent 30%);
+            background-attachment: fixed;
+            margin: 0; padding: 40px; 
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation --- */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .page-title h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 5px 0; }
+        .page-title p { color: var(--text-dim); font-size: 13px; margin: 0; }
+
+        .nav-actions { display: flex; gap: 12px; }
+
+        .btn-base {
+            padding: 10px 20px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; font-size: 13px;
+            display: flex; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-dash {
+            background: var(--glass);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+        }
+        .btn-dash:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+            color: white; box-shadow: 0 8px 15px rgba(59, 130, 246, 0.2);
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(59, 130, 246, 0.3); }
+
+        /* --- Compact Grid --- */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Made slightly smaller */
+            gap: 20px;
+        }
+
+        /* --- Compact Room Card --- */
+        .room-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .img-container { position: relative; height: 160px; overflow: hidden; } /* Reduced height */
+        
+        .room-img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: 0.5s; opacity: 0.9;
+        }
+
+        .room-card:hover .room-img { transform: scale(1.08); opacity: 1; }
+
+        .badge-floor {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            color: var(--accent-blue);
+            padding: 4px 10px; border-radius: 8px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase;
+            border: 1px solid var(--glass-border);
+        }
+
+        .card-content { padding: 18px; }
+        
+        .room-number { font-size: 16px; font-weight: 800; margin: 0 0 6px 0; color: white; }
+        .room-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; height: 38px; overflow: hidden; opacity: 0.8; }
+
+        /* --- Compact Actions --- */
+        .card-actions {
+            display: grid; grid-template-columns: 1fr 1fr;
+            padding: 0 18px 18px; gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 700;
+            text-align: center; text-decoration: none; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+
+        .btn-edit { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid var(--glass-border); }
+        .btn-edit:hover { background: var(--accent-blue); border-color: transparent; }
+
+        .btn-delete { background: rgba(244, 63, 94, 0.08); color: var(--accent-pink); }
+        .btn-delete:hover { background: var(--accent-pink); color: white; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <div class="page-title">
+            <h2>Inventory Management</h2>
+            <p>Managing {{ rooms|length }} total residential units</p>
+        </div>
+        <div class="nav-actions">
+            <a href="/myapp/admin_home/" class="btn-base btn-dash">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="/myapp/add_room/" class="btn-base btn-add">
+                <i class="fas fa-plus"></i> NEW ROOM
+            </a>
+        </div>
+    </div>
+
+    <div class="room-grid">
+        {% for i in rooms %}
+        <div class="room-card">
+            <div class="img-container">
+                <span class="badge-floor">Level {{ i.floor }}</span>
+                {% if i.image %}
+                    <img src="{{ i.image.url }}" class="room-img" alt="Room {{ i.roomnumber }}">
+                {% else %}
+                    <div class="room-img" style="background: #1e293b; display: flex; align-items: center; justify-content: center; color: var(--text-dim);">
+                        <i class="fas fa-image fa-lg"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card-content">
+                <h3 class="room-number">Unit {{ i.roomnumber }}</h3>
+                <p class="room-desc">{{ i.details|truncatechars:60 }}</p>
+            </div>
+
+            <div class="card-actions">
+                <a href="/myapp/edit_room/{{ i.id }}/" class="action-btn btn-edit">
+                    <i class="far fa-edit"></i> Edit
+                </a>
+                <a href="/myapp/delete_room/{{ i.id }}/" class="action-btn btn-delete" onclick="return confirm('Archive this room?')">
+                    <i class="far fa-trash-alt"></i> Delete
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 100px 0; opacity: 0.5;">
+            <i class="fas fa-folder-open" style="font-size: 40px; margin-bottom: 20px;"></i>
+            <h3>No rooms found</h3>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

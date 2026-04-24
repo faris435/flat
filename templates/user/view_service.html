@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Explorer | Anna Vista</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --bg-main: #0f172a; 
+            --accent-blue: #3b82f6;
+            --accent-rose: #f43f5e;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 60px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header Style from Dashboard */
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .back-dashboard {
+            text-decoration: none;
+            color: var(--text-main);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-dashboard:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 35px;
+        }
+
+        /* Card Styled with Dashboard Glassmorphism */
+        .service-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 220px;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .service-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: 0.8s ease;
+        }
+
+        .service-card:hover .service-img {
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 30px;
+            flex-grow: 1;
+        }
+
+        .price-tag {
+            font-size: 1.5rem;
+            color: var(--accent-blue);
+            font-weight: 900;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .service-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            color: #fff;
+        }
+
+        .service-details {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        /* Card Footer */
+        .card-footer {
+            padding: 20px 30px 30px;
+            display: flex;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-book {
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+            flex: 2;
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: #fff;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-rose);
+            border-color: var(--accent-rose);
+        }
+
+        .sl-no {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-rose);
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: #fff;
+            z-index: 2;
+        }
+
+        .category-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            border: 1px solid var(--glass-border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-area">
+        <h2>Premium Services</h2>
+        <a href="/myapp/user_home/" class="back-dashboard">
+            <i class="fas fa-arrow-left"></i> BACK TO DASHBOARD
+        </a>
+    </div>
+
+    <div class="service-grid">
+        {% for i in data %}
+        <div class="service-card">
+            <span class="sl-no">{{ forloop.counter }}</span>
+            
+            <div class="img-wrapper">
+                {% if i.photo %}
+                    <img src="{{ i.photo.url }}" class="service-img" alt="{{ i.name }}">
+                {% else %}
+                    <div class="service-img" style="display:flex; align-items:center; justify-content:center; background: #1e293b;">
+                        <i class="fas fa-concierge-bell fa-3x" style="color: var(--accent-blue); opacity: 0.3;"></i>
+                    </div>
+                {% endif %}
+                <div class="category-badge">ANNA VISTA EXCLUSIVE</div>
+            </div>
+
+            <div class="card-content">
+                <span class="price-tag">₹{{ i.price }}</span>
+                <h3 class="service-title">{{ i.name }}</h3>
+                <p class="service-details">{{ i.description|truncatechars:120 }}</p>
+            </div>
+
+            <div class="card-footer">
+                <a href="/myapp/book_service/{{ i.id }}" class="btn btn-book">
+                    <i class="fas fa-bolt"></i> BOOK NOW
+                </a>
+                <a href="/myapp/user_view_rating/{{ i.id }}" class="btn btn-secondary" title="View Ratings">
+                    <i class="fas fa-star"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 120px; color: var(--text-dim); background: var(--glass); border-radius: 32px; border: 1px solid var(--glass-border);">
+            <i class="fas fa-search fa-3x" style="margin-bottom: 20px; opacity: 0.2;"></i>
+            <p style="font-size: 1.2rem;">No services currently available.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

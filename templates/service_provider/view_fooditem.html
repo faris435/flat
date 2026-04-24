@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management | Luxury Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0a0c;
+            --surface-color: #121214;
+            --surface-elevated: #1a1a1d;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f1c94f;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8a93;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --danger: #ff4b5c;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Navigation Header */
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-gold);
+            transform: translateX(-5px);
+        }
+
+        .header-section {
+            text-align: left;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h2 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            margin: 0;
+        }
+
+        h2 span {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        /* Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .food-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .food-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .img-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: var(--surface-elevated);
+        }
+
+        .food-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8) contrast(1.1);
+            transition: 0.6s ease;
+        }
+
+        .food-card:hover .food-img {
+            filter: brightness(1);
+            transform: scale(1.05);
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-gold);
+            color: var(--bg-base);
+            padding: 5px 15px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            border-radius: 2px;
+        }
+
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+        }
+
+        .food-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .food-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            height: 40px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .card-footer {
+            padding: 0 25px 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-luxury {
+            text-decoration: none;
+            padding: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .btn-edit-lux {
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .btn-edit-lux:hover {
+            background: var(--text-primary);
+            color: var(--bg-base);
+        }
+
+        .btn-delete-lux {
+            border: 1px solid rgba(255, 75, 92, 0.2);
+            color: var(--danger);
+        }
+
+        .btn-delete-lux:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-add-lux {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 12px 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: 0.4s;
+        }
+
+        .btn-add-lux:hover {
+            background: var(--accent-gold);
+            color: var(--bg-base);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav class="nav-top">
+        <a href="{% url 'service_home' %}" class="back-link">
+            <span class="me-2">&larr;</span> Back to Home
+        </a>
+        <a href="/myapp/add_food/" class="btn-add-lux">Add Item</a>
+    </nav>
+
+    <div class="header-section">
+        <h2><span>Curated</span> Menu Management</h2>
+    </div>
+
+    <div class="food-grid">
+        {% for food in data %}
+        <div class="food-card">
+            <div class="img-wrapper">
+                <span class="price-tag">₹{{ food.price }}</span>
+                {% if food.photo %}
+                    <img src="{{ food.photo.url }}" alt="{{ food.item }}" class="food-img">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center h-100 text-muted small">NO IMAGE</div>
+                {% endif %}
+            </div>
+
+            <div class="card-body">
+                <h3 class="food-title">{{ food.item }}</h3>
+                <p class="food-details">{{ food.description }}</p>
+                
+                <div class="meta-row">
+                    <span>Stock: {{ food.quantity }} units</span>
+                    <span>MFG: {{ food.mfg_date }}</span>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <a href="/myapp/edit_fooditem/{{food.id}}" class="btn-luxury btn-edit-lux">Edit</a>
+                <a href="/myapp/delete_fooditem/{{food.id}}" class="btn-luxury btn-delete-lux" onclick="return confirm('Archive this item?')">Delete</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 100px; border: 1px dashed var(--border-subtle);">
+            <p class="text-secondary">The portfolio is currently empty.</p>
+            <a href="/myapp/add_food/" class="btn-add-lux mt-3">Initiate First Item</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management | Executive Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050505;
+            --bg-surface: #0f0f12;
+            --accent-gold: #d4af37;
+            --accent-gold-soft: rgba(212, 175, 55, 0.1);
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --text-main: #f8fafc;
+            --text-dim: #64748b;
+            
+            --status-ordered: #f59e0b;
+            --status-confirmed: #3b82f6;
+            --status-rejected: #ef4444;
+            --status-paid: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            padding: 3rem 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 3rem;
+            border-left: 3px solid var(--accent-gold);
+            padding-left: 1.5rem;
+        }
+
+        .page-header h2 {
+            font-weight: 300;
+            letter-spacing: -1px;
+            font-size: 2rem;
+        }
+
+        .page-header span {
+            color: var(--accent-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Table Styling */
+        .table-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .table {
+            color: var(--text-main) !important;
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .table thead {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .table thead th {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1.2rem 1rem;
+        }
+
+        .table tbody td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--border-glass);
+            font-size: 0.9rem;
+            background: transparent;
+        }
+
+        /* Asset Styling */
+        .asset-box { display: flex; align-items: center; gap: 12px; }
+        .asset-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-glass); }
+        .user-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+
+        .sub-text {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+
+        /* Badge Logic */
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .status-ordered { background: rgba(245, 158, 11, 0.1); color: var(--status-ordered); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .status-confirmed { background: rgba(59, 130, 246, 0.1); color: var(--status-confirmed); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .status-rejected { background: rgba(239, 68, 68, 0.1); color: var(--status-rejected); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-paid { background: rgba(16, 185, 129, 0.1); color: var(--status-paid); border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        /* Action Buttons */
+        .btn-action {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: 0.3s;
+            border: none;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        .btn-confirm { background: var(--status-paid); color: #000; }
+        .btn-confirm:hover { background: #14d496; transform: translateY(-2px); }
+        
+        .btn-reject { background: transparent; color: var(--status-rejected); border: 1px solid var(--status-rejected); }
+        .btn-reject:hover { background: var(--status-rejected); color: #fff; }
+
+        .empty-state {
+            padding: 4rem;
+            text-align: center;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <span>Logistics Control</span>
+        <h2>Active Food Orders</h2>
+    </div>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ref ID</th>
+                    <th>Culinary Item</th>
+                    <th>Requester</th>
+                    <th>Placement</th>
+                    <th>Logistics</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in data %}
+                <tr>
+                    <td class="text-dim">#{{ order.id }}</td>
+                    <td>
+                        <div class="asset-box">
+                            {% if order.FOOD.photo %}
+                            <img src="{{ order.FOOD.photo.url }}" class="asset-img">
+                            {% endif %}
+                            <div>
+                                <strong>{{ order.FOOD.item }}</strong>
+                                <span class="sub-text">₹{{ order.FOOD.price }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="asset-box">
+                            {% if order.USER.photo %}
+                            <img src="{{ order.USER.photo.url }}" class="user-img">
+                            {% endif %}
+                            <div>
+                                <strong>{{ order.USER.name }}</strong>
+                                <span class="sub-text">{{ order.USER.phone }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>Floor {{ order.USER.ROOM.floor }}</strong>
+                        <span class="sub-text">Room {{ order.USER.ROOM.roomnumber }}</span>
+                    </td>
+                    <td>
+                        <strong>Qty: {{ order.quantity }}</strong>
+                        <span class="sub-text">{{ order.date }}</span>
+                    </td>
+                    <td>
+                        {% if order.Status == 'ordered' %}
+                            <span class="badge-status status-ordered">Ordered</span>
+                        {% elif order.Status == 'confirmed' %}
+                            <span class="badge-status status-confirmed">Confirmed</span>
+                        {% elif order.Status == 'rejected' %}
+                            <span class="badge-status status-rejected">Rejected</span>
+                        {% elif order.Status == 'paid' %}
+                            <span class="badge-status status-paid">Paid</span>
+                        {% else %}
+                            <span class="badge-status" style="background: rgba(255,255,255,0.05);">{{ order.Status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {% if order.Status == 'ordered' %}
+                        <div style="max-width: 120px; margin-left: auto;">
+                            <form method="POST" action="/myapp/confirm_food_order/{{ order.id }}/" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action btn-confirm">Accept</button>
+                            </form>
+                            <form method="POST" action="/myapp/reject_food_order/{{ order.id }}/" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-action btn-reject">Decline</button>
+                            </form>
+                        </div>
+                        {% elif order.Status == 'paid' %}
+                            <span style="color: var(--status-paid); font-size: 0.75rem; font-weight: 700;">PROCESSED</span>
+                        {% else %}
+                            <span class="text-dim">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <p>No active culinary requests in the queue.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
